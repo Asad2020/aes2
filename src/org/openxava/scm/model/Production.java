@@ -1,5 +1,7 @@
 package org.openxava.scm.model;
 
+import java.util.*;
+
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
@@ -10,7 +12,10 @@ import org.openxava.annotations.*;
 @Views({
 	@View(members= "part;" +
 "quantityProduced, quantityRejected;" +
-"Location[ location, productionShift]"
+"location, productionShift;" +
+"Downtime{downtime};" +
+"Production Scraps{productionScrap};" +
+"Production Reworks{productionRework};"
      ),
 	@View(name="ProducedPart", members="")
 })
@@ -75,5 +80,45 @@ public class Production extends Identifiable{
 	public void setProductionShift(ProductionShift productionShift) {
 	     this.productionShift = productionShift;
 	}
+//*****************************************************************	
+	@ListProperties("downtimeType.type,plannedDowntime, startTime, finishTime")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="production", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<Downtimes> downtime = new ArrayList<Downtimes>();
 	
+	public Collection<Downtimes> getDowntime() {
+	 return downtime;
+	}
+	public void setDowntime(Collection<Downtimes> downtime) {
+	 this.downtime = downtime;
+	}
+	
+//*****************************************************************	
+	@ListProperties("quantityScrapped, qualityProblemType.type")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="production", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<ProductionScraps> productionScrap = new ArrayList<ProductionScraps>();
+	
+	public Collection<ProductionScraps> getProductionScrap() {
+	 return productionScrap;
+	}
+	public void setProductionScrap(Collection<ProductionScraps> productionScrap) {
+	 this.productionScrap = productionScrap;
+	}
+		
+//*****************************************************************	
+	@ListProperties("quantityReworked, qualityProblemType.type,reworkType.type")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="production", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<ProductionReworks> productionRework= new ArrayList<ProductionReworks>();
+	
+	public Collection<ProductionReworks> getProductionRework() {
+	 return productionRework;
+	}
+	public void setProductionRework(Collection<ProductionReworks> productionRework) {
+	 this.productionRework = productionRework;
+	}	
 }
