@@ -7,18 +7,16 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 
 @Entity
-/*@View(members= // This view has no name, so it will be the view used by default
-"name, shortName, type;" + // Comma separated means in the same line
-"address;" + // Semicolon means a new line
-"remarks;"+
-"Quotations {" +
-" quotations;" +
-"}" +
-//"Parts {" +
-//" parts;" +
-"}" 
-)*/
 @Table(name="aes_organization")
+@View(members= 
+"name, shortName, type;" + 
+"address;" +
+"remarks;" +
+"parts;" +
+"carModel;"
+//"Quotations {quotations};" +
+)
+@Tab(properties="name, shortName, type.type, remarks")
 public class Organization extends Identifiable{	
 	@Column(length=50)
 	@Required 
@@ -85,6 +83,7 @@ public class Organization extends Identifiable{
     
    @ManyToMany(mappedBy="suppliers", cascade = CascadeType.ALL)
    @ListAction("ManyToMany.new")
+   @ListProperties("name, number, backNumber, category.name, unitOfMeasurement.name,purchaseType.type")
    private Collection<Part> parts;
    public Collection<Part> getParts() {
 	   return parts;
@@ -92,5 +91,23 @@ public class Organization extends Identifiable{
    public void setParts(Collection<Part> parts) {
 	   this.parts = parts;
    }
+   
+   //**********************************************  link to Car model  *******************************************
+   
+	@ListProperties("carModel")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="customer", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<CarModel> carModel = new ArrayList<CarModel>();
+	
+	public Collection<CarModel> getCarModel() {
+	 return carModel;
+	}
+	public void setCarModel(Collection<CarModel> carModel) {
+	 this.carModel = carModel;
+	}
+	
+	//**************************************************************************************************************
+   
 	
 }
