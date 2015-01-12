@@ -16,7 +16,7 @@ import org.openxava.annotations.*;
 	" number;" +
 	" backNumber;" +
 	" category;" +
-	" unitOfMeasurement;" + 
+	" uom;" + 
 	"]" +
 	"Photo [" +
 	" photo;" + 
@@ -33,9 +33,12 @@ import org.openxava.annotations.*;
 	" cutSizeLength;" +
 	" partPerStrip;" +
 	"}" + 
+	"Car Models {" +
+	" carModelVariance;" +
+	"}" + 
 	"Purchasing Information {" +
 	" purchaseType;" +
-	" suppliers;" +
+	" supplier;" +
 	"}" + 
 	"Production Information {" +
 	" standardPacking;" +
@@ -50,7 +53,7 @@ import org.openxava.annotations.*;
 	members="name, number")
 })
 
-@Tab( properties="name, number, backNumber, category.name, unitOfMeasurement.name,purchaseType.type, photo")
+@Tab( properties="name, number, backNumber, category.name,uom.uom, purchaseType.type, photo")
 
 public class Part extends Identifiable{	
 	@Column(name = "part_name" ,length=30)
@@ -111,7 +114,7 @@ public class Part extends Identifiable{
 	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList
-	private UnitOfMeasurement unitOfMeasurement;
+	private Uom unitOfMeasurement;
 	
 	@Column(name = "standard_packing" ,length=5)
 	private int standardPacking;
@@ -123,8 +126,8 @@ public class Part extends Identifiable{
 	@DescriptionsList(descriptionProperties="type")
 	private PurchaseType purchaseType;
 	
-
-   
+//****************************************** link to organization/Supplier ***********************
+   /*
    @ManyToMany (targetEntity=Organization.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	   @ListAction("ManyToMany.new")
 	   @JoinTable(name="aes_part_supplier",
@@ -138,6 +141,50 @@ public class Part extends Identifiable{
    public void setSupplier(Collection<Organization> suppliers) {
 	   this.suppliers = suppliers;
    }
+   */
+//**********************************************  link to Part Car model variance *******************************************
+   
+	@ListProperties("carModelVariance.carModel.carModel,carModelVariance.carModelVariance, quantityUsed")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="part", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<PartCarModelVariance> carModelVariance = new ArrayList<PartCarModelVariance>();
+	
+	public Collection<PartCarModelVariance> getCarModelVariance() {
+	 return carModelVariance;
+	}
+	public void setCarModelVariance(Collection<PartCarModelVariance> carModelVariance) {
+	 this.carModelVariance = carModelVariance;
+	}
+ 
+//**********************************************  link to Part Supplier *******************************************
+   
+	@ListProperties("supplier.name")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="part", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<PartSupplier> supplier = new ArrayList<PartSupplier>();
+	
+	public Collection<PartSupplier> getSupplier() {
+	 return supplier;
+	}
+	public void setSupplier(Collection<PartSupplier> supplier) {
+	 this.supplier = supplier;
+	}	
+
+//**********************************************  link to Uom *******************************************
+	@ManyToOne (fetch=FetchType.LAZY)
+	@DescriptionsList(descriptionProperties="uom")
+	private Uom uom;  
+
+	public Uom getUom() {
+	     return uom;
+	}
+	public void setUom(Uom uom) {
+	     this.uom = uom;
+	}
+	
+//************************************************ link to part itself ********************************
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name="part_child",
@@ -238,10 +285,10 @@ public class Part extends Identifiable{
 	this.partPerStrip = partPerStrip;
 	}
 	
-	public UnitOfMeasurement getUnitOfMeasurement() {
+	public Uom getUnitOfMeasurement() {
 	     return unitOfMeasurement;
 	}
-	public void setUnitOfMeasurement(UnitOfMeasurement unitOfMeasurement) {
+	public void setUnitOfMeasurement(Uom unitOfMeasurement) {
 	     this.unitOfMeasurement = unitOfMeasurement;
 	}
 	

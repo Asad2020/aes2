@@ -1,5 +1,7 @@
 package org.openxava.scm.model;
 
+import java.util.*;
+
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
@@ -8,7 +10,10 @@ import org.openxava.annotations.*;
 @Entity
 @Table(name="aes_customer_forecasts")
 
-//@View(members="")
+@View(members="customer;"
+		+ "monthYear;"
+		+ "workingDay;"
+		+ "volume")
 @Tab(properties="customer.name, monthYear.monthYear, workingDay")
 
 public class CustomerForecast extends Identifiable{
@@ -50,7 +55,22 @@ public class CustomerForecast extends Identifiable{
 	public void setWorkingDay(int workingDay) {
 	this.workingDay = workingDay;
 	}
-	
 
+   //**********************************************  link to Car model volume *****************************
+   
+    @ListProperties("carModelVariance.carModel.carModel, carModelVariance.carModelVariance, estimatedQuantity")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="customerForecast", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<CarModelVolume> volume = new ArrayList<CarModelVolume>();
+	
+	public Collection<CarModelVolume> getVolume() {
+	 return volume;
+	}
+	public void setVolume(Collection<CarModelVolume> volume) {
+	 this.volume = volume;
+	}
+	
+	//*********************************************************************************************************
 
 }

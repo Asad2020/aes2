@@ -12,7 +12,7 @@ import org.openxava.annotations.*;
 "name, shortName, type;" + 
 "address;" +
 "remarks;" +
-"parts;" +
+"part;" +
 "carModel;"
 //"Quotations {quotations};" +
 )
@@ -81,6 +81,23 @@ public class Organization extends Identifiable{
         this.quotations = quotations;
     }
     
+//**********************************************  link to Part Supplier *******************************************
+    
+ 	@ListProperties("part.name, part.number")
+ 	@OneToMany( // To declare this as a persistent collection
+ 			mappedBy="supplier", // The member of Detail that stores the relationship
+ 			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+ 	private Collection<PartSupplier> part = new ArrayList<PartSupplier>();
+ 	
+ 	public Collection<PartSupplier> getPart() {
+ 	 return part;
+ 	}
+ 	public void setPart(Collection<PartSupplier> part) {
+ 	 this.part = part;
+ 	}	
+    
+//************************************************* link to part ******************************************   
+    /*
    @ManyToMany(mappedBy="suppliers", cascade = CascadeType.ALL)
    @ListAction("ManyToMany.new")
    @ListProperties("name, number, backNumber, category.name, unitOfMeasurement.name,purchaseType.type")
@@ -91,8 +108,8 @@ public class Organization extends Identifiable{
    public void setParts(Collection<Part> parts) {
 	   this.parts = parts;
    }
-   
-   //**********************************************  link to Car model  *******************************************
+   */
+//**********************************************  link to Car model  *************************************
    
 	@ListProperties("carModel")
 	@OneToMany( // To declare this as a persistent collection
