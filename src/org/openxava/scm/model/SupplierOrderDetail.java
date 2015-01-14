@@ -1,20 +1,25 @@
-/*package org.openxava.scm.model;
+package org.openxava.scm.model;
 
-import java.math.*;
+import java.util.*;
 
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
 @Entity
-public class SupplierOrderDetail extends Identifiable{
-	@ManyToOne // Without lazy fetching because it fails when removing a detail from parent
-	private SupplierOrder parent;
+@Table(name="aes_supplierorder_details")
 
-	@ManyToOne(fetch=FetchType.LAZY, optional=true)
-	@ReferenceView("quotationPart")// this is a custom view of parts
-	@NoFrame // we don't want to see any frame
-	private Part supplierOrderPart;
+//@View(members="")
+@Tab(properties="parent.orderNumber, part.name, part.number, orderQuantity")
+
+public class SupplierOrderDetail extends Identifiable{
+
+//******************************************************* link to supplier order **********************	
+	
+	@ManyToOne 
+	@DescriptionsList(descriptionProperties="orderNumber")
+	@Required
+	private SupplierOrder parent;
 	
 	public SupplierOrder getParent() {
 	     return parent;
@@ -22,24 +27,47 @@ public class SupplierOrderDetail extends Identifiable{
 	public void setParent(SupplierOrder parent) {
 	     this.parent = parent;
 	}
+
+//****************************************************** link to part ********************************
 	
-	public Part getSupplierOrderPart() {
-	     return supplierOrderPart;
+	@ManyToOne (fetch=FetchType.LAZY)
+	@DescriptionsList(descriptionProperties="name, number")
+	@Required
+	private Part part;
+	public Part getPart() {
+	     return part;
 	}
-	public void setSupplierOrderPart(Part supplierOrderPart) {
-	     this.supplierOrderPart = supplierOrderPart;
+	public void setPart(Part part) {
+	     this.part = part;
 	}
+
+//************************************************** order quantity *********************************
 	
 	@Column(name = "order_quantity" ,length=5)
-	private int orderQuantity;
+	private float orderQuantity;
 	
-	public int getOrderQuantity() {
+	public float getOrderQuantity() {
 	return orderQuantity;
 	}
-	public void setOrderQuantity(int orderQuantity) {
+	public void setOrderQuantity(float orderQuantity) {
 	this.orderQuantity = orderQuantity;
 	}
+
+//******************************************* Link to Supplier Delivery Detail *******************************	
+
+	@ListProperties("quantityReceived, parent.deliveryNumber, parent.deliveryDate")
 	
+	@OneToMany(mappedBy="supplierOrderDetail", cascade=CascadeType.ALL)	
+	private Collection<SupplierDeliveryDetail> supplierDeliveryDetail = new ArrayList<SupplierDeliveryDetail>();
+	
+    public Collection<SupplierDeliveryDetail> getSupplierDeliveryDetail() {
+    	return supplierDeliveryDetail;
+    }
+    public void setSupplierDeliveryDetail(Collection<SupplierDeliveryDetail> supplierDeliveryDetail) {
+    	this.supplierDeliveryDetail=supplierDeliveryDetail;
+    } 	
+	
+/*
 	@Stereotype("MONEY")
 	@Depends("orderQuantity")
 	//When the user changes product or quantity
@@ -66,6 +94,6 @@ public class SupplierOrderDetail extends Identifiable{
 	public void setPricePerUnit(BigDecimal pricePerUnit) {
 	this.pricePerUnit = pricePerUnit;
 	} 
-	
+*/	
 
-}*/
+}

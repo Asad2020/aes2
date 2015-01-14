@@ -10,27 +10,33 @@ import org.openxava.annotations.*;
 @Table(name="aes_organization")
 @View(members= 
 "name, shortName, type;" + 
-"address;" +
+//"address;" +
 "remarks;" +
-"part;" +
-"carModel;"
-//"Quotations {quotations};" +
+//"Supplier Parts{part};" +
+"Customer Car Models{carModel};" +
+"Supplier Orders {supplierOrder};" +
+"Supplier Quotations {quotations};"
 )
 @Tab(properties="name, shortName, type.type, remarks")
 public class Organization extends Identifiable{	
+	
+//******************************************* Name ********************************
 	@Column(length=50)
 	@Required 
 	private String name ;
-	
-	@Column(length=20)
-	private String shortName ;
-	
 	public String getName() {
 	return name;
 	}
 	public void setName(String name) {
 	this.name = name;
 	}
+
+//**************************************** Short name ****************************	
+	
+	@Column(length=20)
+	private String shortName ;
+	
+
 	
 	public String getShortName() {
 	return shortName;
@@ -49,7 +55,7 @@ public class Organization extends Identifiable{
 	     this.type = type;
 	}
 	
-	@Embedded
+/*	@Embedded
 	private Address address; // A regular Java reference
 	public Address getAddress() {
 	if (address == null) address = new Address(); // Thus it never is null
@@ -58,7 +64,7 @@ public class Organization extends Identifiable{
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	
+	*/
 	@Stereotype("MEMO")
 	private String remarks;
 	
@@ -69,7 +75,8 @@ public class Organization extends Identifiable{
 	this.remarks = remarks;	
 	}
 	
-
+//*********************************************** link to quotation ***********************************
+	
     @OneToMany(mappedBy="supplier")
     private Collection<Quotation> quotations;
 
@@ -81,34 +88,19 @@ public class Organization extends Identifiable{
         this.quotations = quotations;
     }
     
-//**********************************************  link to Part Supplier *******************************************
+//*********************************************** link to Supplier Order ***********************************
+	
+    @OneToMany(mappedBy="supplier")
+    private Collection<SupplierOrder> supplierOrder;
+
+    public Collection<SupplierOrder> getSupplierOrder() {
+        return supplierOrder;
+    }
+
+    public void setSupplierOrder(Collection <SupplierOrder> supplierOrder) {
+        this.supplierOrder = supplierOrder;
+    }
     
- 	@ListProperties("part.name, part.number")
- 	@OneToMany( // To declare this as a persistent collection
- 			mappedBy="supplier", // The member of Detail that stores the relationship
- 			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
- 	private Collection<PartSupplier> part = new ArrayList<PartSupplier>();
- 	
- 	public Collection<PartSupplier> getPart() {
- 	 return part;
- 	}
- 	public void setPart(Collection<PartSupplier> part) {
- 	 this.part = part;
- 	}	
-    
-//************************************************* link to part ******************************************   
-    /*
-   @ManyToMany(mappedBy="suppliers", cascade = CascadeType.ALL)
-   @ListAction("ManyToMany.new")
-   @ListProperties("name, number, backNumber, category.name, unitOfMeasurement.name,purchaseType.type")
-   private Collection<Part> parts;
-   public Collection<Part> getParts() {
-	   return parts;
-   }
-   public void setParts(Collection<Part> parts) {
-	   this.parts = parts;
-   }
-   */
 //**********************************************  link to Car model  *************************************
    
 	@ListProperties("carModel")
@@ -123,8 +115,5 @@ public class Organization extends Identifiable{
 	public void setCarModel(Collection<CarModel> carModel) {
 	 this.carModel = carModel;
 	}
-	
-	//**************************************************************************************************************
    
-	
 }

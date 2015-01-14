@@ -2,8 +2,11 @@ package org.openxava.scm.model;
 
 import javax.persistence.*;
 
-@Embeddable // We use @Embeddable instead of @Entity
-public class Address {
+@Entity
+@Table(name="aes_address")
+//@View("members="")
+//@Tab("properties="")
+public class Address extends Identifiable {
 	@Column(length=30) // The members are annotated as in entity case
 	private String street;
 	@Column(length=5)

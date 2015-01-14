@@ -38,7 +38,13 @@ import org.openxava.annotations.*;
 	"}" + 
 	"Purchasing Information {" +
 	" purchaseType;" +
-	" supplier;" +
+	//" supplier;" +
+	"Quotation Information {" +
+	" quotationDetail;" +
+	"}" +
+	"Purchasing Information {" +
+	" supplierOrderDetail;" +
+	"}" +
 	"}" + 
 	"Production Information {" +
 	" standardPacking;" +
@@ -126,23 +132,7 @@ public class Part extends Identifiable{
 	@DescriptionsList(descriptionProperties="type")
 	private PurchaseType purchaseType;
 	
-//****************************************** link to organization/Supplier ***********************
-   /*
-   @ManyToMany (targetEntity=Organization.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	   @ListAction("ManyToMany.new")
-	   @JoinTable(name="aes_part_supplier",
-       joinColumns={@JoinColumn(name="part_id", referencedColumnName="oid")},
-       inverseJoinColumns={@JoinColumn(name="supplier_id", referencedColumnName="oid")})
-   private Collection<Organization> suppliers;
-    
-   public Collection<Organization> getSuppliers() {
-     return suppliers;
-   }
-   public void setSupplier(Collection<Organization> suppliers) {
-	   this.suppliers = suppliers;
-   }
-   */
-//**********************************************  link to Part Car model variance *******************************************
+//**********************************************  link to Part Car model variance ***********************************
    
 	@ListProperties("carModelVariance.carModel.carModel,carModelVariance.carModelVariance, quantityUsed")
 	@OneToMany( // To declare this as a persistent collection
@@ -156,21 +146,66 @@ public class Part extends Identifiable{
 	public void setCarModelVariance(Collection<PartCarModelVariance> carModelVariance) {
 	 this.carModelVariance = carModelVariance;
 	}
- 
-//**********************************************  link to Part Supplier *******************************************
-   
-	@ListProperties("supplier.name")
-	@OneToMany( // To declare this as a persistent collection
-			mappedBy="part", // The member of Detail that stores the relationship
-			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
-	private Collection<PartSupplier> supplier = new ArrayList<PartSupplier>();
 	
-	public Collection<PartSupplier> getSupplier() {
-	 return supplier;
+//**********************************************  link to Quotation Detail *******************************************
+	  
+		@ListProperties("parent.supplier.name, parent.quotationNumber, price")
+		@OneToMany( // To declare this as a persistent collection
+				mappedBy="part", // The member of Detail that stores the relationship
+				cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+		private Collection<QuotationDetail> quotationDetail = new ArrayList<QuotationDetail>();
+		
+		public Collection<QuotationDetail> getQuotationDetail() {
+		 return quotationDetail;
+		}
+		public void setQuotationDetail(Collection<QuotationDetail> quotationDetail) {
+		 this.quotationDetail = quotationDetail;
+		}		
+		
+//**********************************************  link to Supplier Order Detail *******************************************
+	  
+		@ListProperties("parent.supplier.name, parent.orderNumber, parent.monthYear.monthYear,  orderQuantity, part.uom.uom")
+		@OneToMany( // To declare this as a persistent collection
+				mappedBy="part", // The member of Detail that stores the relationship
+				cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+		private Collection<SupplierOrderDetail> supplierOrderDetail = new ArrayList<SupplierOrderDetail>();
+		
+		public Collection<SupplierOrderDetail> getSupplierOrderDetail() {
+		 return supplierOrderDetail;
+		}
+		public void setSupplierOrderDetail(Collection<SupplierOrderDetail> supplierOrderDetail) {
+		 this.supplierOrderDetail = supplierOrderDetail;
+		}	
+
+//**********************************************  link to Part Child/Parent *******************************************
+  
+	@ListProperties("child.name, child.number, quantityUsed")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="parent", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<PartChild> child = new ArrayList<PartChild>();
+	
+	public Collection<PartChild> getChild() {
+	 return child;
 	}
-	public void setSupplier(Collection<PartSupplier> supplier) {
-	 this.supplier = supplier;
-	}	
+	public void setChild(Collection<PartChild> child) {
+	 this.child = child;
+	}		
+	
+//**********************************************  link to Part Child/Child *******************************************
+
+@ListProperties("parent.name, parent.number, quantityUsed")
+@OneToMany( // To declare this as a persistent collection
+		mappedBy="child", // The member of Detail that stores the relationship
+		cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+private Collection<PartChild> parent = new ArrayList<PartChild>();
+
+public Collection<PartChild> getParent() {
+ return parent;
+}
+public void setParent(Collection<PartChild> parent) {
+ this.parent = parent;
+}
 
 //**********************************************  link to Uom *******************************************
 	@ManyToOne (fetch=FetchType.LAZY)
@@ -185,7 +220,7 @@ public class Part extends Identifiable{
 	}
 	
 //************************************************ link to part itself ********************************
-    
+/*   
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name="part_child",
         joinColumns={@JoinColumn(name="part_id", referencedColumnName="oid")},
@@ -208,7 +243,9 @@ public class Part extends Identifiable{
     }
     public void setParent(Collection<Part> parent) {
     }
-
+*/
+//***********************************************************************************   
+    
 	public String getName() {
 	return name;
 	}
