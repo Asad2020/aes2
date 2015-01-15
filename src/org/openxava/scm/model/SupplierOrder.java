@@ -113,7 +113,7 @@ public class SupplierOrder extends Identifiable{
 //*************************************  link to Supplier Delivery  ***************************	
 	
 	@ListProperties("deliveryNumber, deliveryDate")
-	@OneToMany(mappedBy="supplierOrder", cascade=CascadeType.ALL)	
+	@OneToMany(mappedBy="supplierOrder", cascade=CascadeType.REMOVE)	
 	private Collection<SupplierDelivery> supplierDelivery = new ArrayList<SupplierDelivery>();
 	
     public Collection<SupplierDelivery> getSupplierDelivery() {

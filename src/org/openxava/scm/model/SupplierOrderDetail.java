@@ -57,7 +57,7 @@ public class SupplierOrderDetail extends Identifiable{
 
 	@ListProperties("quantityReceived, parent.deliveryNumber, parent.deliveryDate")
 	
-	@OneToMany(mappedBy="supplierOrderDetail", cascade=CascadeType.ALL)	
+	@OneToMany(mappedBy="supplierOrderDetail", cascade=CascadeType.REMOVE)	
 	private Collection<SupplierDeliveryDetail> supplierDeliveryDetail = new ArrayList<SupplierDeliveryDetail>();
 	
     public Collection<SupplierDeliveryDetail> getSupplierDeliveryDetail() {

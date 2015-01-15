@@ -7,8 +7,10 @@ import org.openxava.annotations.*;
 @Entity
 @Table(name="aes_supplierdelivery_details")
 
-//@View(members="")
-//@Tab(properties="")
+@View(members="parent;"
+		+ "supplierOrderDetail;"
+		+ "quantityReceived")
+@Tab(properties="supplierOrderDetail.part.name, supplierOrderDetail.part.number, supplierOrderDetail.orderQuantity,supplierOrderDetail.parent.orderNumber, supplierOrderDetail.parent.monthYear.monthYear,supplierOrderDetail.parent.supplier.name,parent.deliveryNumber, quantityReceived")
 
 public class SupplierDeliveryDetail extends Identifiable{
 	
@@ -48,7 +50,7 @@ public class SupplierDeliveryDetail extends Identifiable{
 	public SupplierOrderDetail getSupplierOrderDetail() {
 	     return supplierOrderDetail;
 	}
-	public void setSupplierOrderDetail(SupplierOrderDetail supplierOrderDetail) {
+    public void setSupplierOrderDetail(SupplierOrderDetail supplierOrderDetail) {
 	     this.supplierOrderDetail = supplierOrderDetail;
 	}
 }

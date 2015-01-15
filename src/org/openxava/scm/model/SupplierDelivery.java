@@ -10,9 +10,23 @@ import org.openxava.calculators.*;
 @Entity
 @Table(name="aes_supplier_deliveries")
 //@View(members="")
-//@Tab(properties="")
+@Tab(properties="supplierOrder.orderNumber, supplierOrder.monthYear.monthYear, deliveryNumber, deliveryDate")
 
 public class SupplierDelivery extends Identifiable {
+	
+//******************************  Link to Location *************************
+
+  	@ManyToOne 
+  	@DescriptionsList(descriptionProperties="locationName, locationType.type")
+  	@Required
+  	private Location location;
+  	
+  	public Location getLocation() {
+  	     return location;
+  	}
+  	public void setLocation(Location location) {
+  	     this.location = location;
+  	}  
 	
 //******************************  Link to Supplier Order *************************
 
@@ -56,8 +70,8 @@ public class SupplierDelivery extends Identifiable {
 	
 //******************************************* Supplier Delivery Detail *******************************	
 
-	@ListProperties("quantityReceived")
-	@OneToMany(mappedBy="parent", cascade=CascadeType.ALL)	
+	@ListProperties("supplierOrderDetail.part.name, supplierOrderDetail.part.number, supplierOrderDetail.orderQuantity, quantityReceived")
+	@OneToMany(mappedBy="parent", cascade=CascadeType.REMOVE)	
 	private Collection<SupplierDeliveryDetail> supplierDeliveryDetail = new ArrayList<SupplierDeliveryDetail>();
 	
     public Collection<SupplierDeliveryDetail> getSupplierDeliveryDetail() {
@@ -65,7 +79,6 @@ public class SupplierDelivery extends Identifiable {
     }
     public void setSupplierDeliveryDetail(Collection<SupplierDeliveryDetail> supplierDeliveryDetail) {
     	this.supplierDeliveryDetail=supplierDeliveryDetail;
-    } 
-	
+    }   
 
 }
