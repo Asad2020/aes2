@@ -1,5 +1,7 @@
 package org.openxava.scm.model;
 
+import java.util.*;
+
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
@@ -51,5 +53,20 @@ public class PartRequest extends Identifiable{
 	public void setRequestDate(java.util.Date requestDate) {
 	     this.requestDate = requestDate;
 	}
+	
+//***************************************  link to Part Request Details **************
+    
+  	@ListProperties("part.name, part.number, quantityRequest, remark")
+  	@OneToMany( // To declare this as a persistent collection
+  			mappedBy="partRequest", // The member of Detail that stores the relationship
+  			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
+  	private Collection<PartRequestDetail> partRequestDetail = new ArrayList<PartRequestDetail>();
+  	
+  	public Collection<PartRequestDetail> getPartRequestDetail() {
+  	 return partRequestDetail;
+  	}
+  	public void setPartRequestDetail(Collection<PartRequestDetail> partRequestDetail) {
+  	 this.partRequestDetail = partRequestDetail;
+  	}	
 	
 }

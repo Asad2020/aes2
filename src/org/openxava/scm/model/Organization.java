@@ -10,10 +10,11 @@ import org.openxava.annotations.*;
 @Table(name="aes_organization")
 @View(members= 
 "name, shortName, type;" + 
-//"address;" +
 "remarks;" +
 //"Supplier Parts{part};" +
-"Customer Car Models{carModel};" +
+"Customer Car Models{carModel};"
++ "Address{address};"
++ "Contacts{contact};" +
 "Supplier Orders {supplierOrder};" +
 "Supplier Quotations {quotations};"
 )
@@ -44,6 +45,8 @@ public class Organization extends Identifiable{
 	public void setShortName(String shortName) {
 	this.shortName = shortName;
 	}
+
+//******************************* link to organization type ****************************	
 	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList(descriptionProperties="type")
@@ -55,16 +58,35 @@ public class Organization extends Identifiable{
 	     this.type = type;
 	}
 	
-/*	@Embedded
-	private Address address; // A regular Java reference
-	public Address getAddress() {
-	if (address == null) address = new Address(); // Thus it never is null
-	return address;
-	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-	*/
+//************************** link to address ***********************************
+	
+	@ListProperties("addressType.type, state, city, zipCode, street")
+	@OneToMany(mappedBy="organization", cascade=CascadeType.REMOVE)	
+	private Collection<Address> address = new ArrayList<Address>();
+	
+    public Collection<Address> getAddress() {
+    	return address;
+    }
+    public void setAddress(Collection<Address> address) {
+    	this.address=address;
+    } 
+    
+//************************** link to address ***********************************
+	
+  	@ListProperties("name, position, mobileNumber, phoneNumber, faxNumber, email, canCall, canEmail")
+  	@OneToMany(mappedBy="organization", cascade=CascadeType.REMOVE)	
+  	private Collection<Contact> contact = new ArrayList<Contact>();
+  	
+      public Collection<Contact> getContact() {
+      	return contact;
+      }
+      public void setContact(Collection<Contact> contact) {
+      	this.contact=contact;
+      } 
+    
+// ***************************************** Memo *************************************
+	
+
 	@Stereotype("MEMO")
 	private String remarks;
 	

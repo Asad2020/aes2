@@ -176,6 +176,21 @@ public class Part extends Identifiable{
 		public void setSupplierOrderDetail(Collection<SupplierOrderDetail> supplierOrderDetail) {
 		 this.supplierOrderDetail = supplierOrderDetail;
 		}	
+		
+//**********************************************  link to Part Request Detail *******************************************
+  
+	@ListProperties("partRequest.fromLocation, partRequest.toLocation, quantityRequest")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="part", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<PartRequestDetail> partRequestDetail = new ArrayList<PartRequestDetail>();
+	
+	public Collection<PartRequestDetail> getPartRequestDetail() {
+	 return partRequestDetail;
+	}
+	public void setPartRequestDetail(Collection<PartRequestDetail> partRequestDetail) {
+	 this.partRequestDetail = partRequestDetail;
+	}
 
 //**********************************************  link to Part Child/Parent *******************************************
   

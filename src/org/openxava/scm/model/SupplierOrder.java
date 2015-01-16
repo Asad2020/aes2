@@ -123,5 +123,4 @@ public class SupplierOrder extends Identifiable{
     	this.supplierDelivery= supplierDelivery;
     } 
 	
-    
 }
