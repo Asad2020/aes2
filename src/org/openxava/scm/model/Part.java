@@ -31,7 +31,9 @@ import org.openxava.annotations.*;
 	" cutSizeWidth;" +
 	" cutSizePitch;" +
 	" cutSizeLength;" +
+	"stripLength;" +
 	" partPerStrip;" +
+	" blankWeight;" +
 	"}" + 
 	"Car Models {" +
 	" carModelVariance;" +
@@ -62,16 +64,46 @@ import org.openxava.annotations.*;
 @Tab( properties="name, number, backNumber, category.name,uom.uom, purchaseType.type, photo")
 
 public class Part extends Identifiable{	
+	
+//************************************** name *******************************************	
+	
 	@Column(name = "part_name" ,length=30)
 	@Required 
 	private String name;
 	
+	public String getName() {
+	return name;
+	}
+	public void setName(String name) {
+	this.name = name;
+	}
+
+//************************************ number *******************************************	
+	
 	@Column(name = "part_number" ,length=30)
 	private String number;
 	
+	public String getNumber() {
+	return number;
+	}
+	public void setNumber(String number) {
+	this.number = number;
+	}
+
+//************************************ backNumber **************************************	
+	
 	@Column(name = "back_number" ,length=30)
 	private String backNumber;
-    
+	
+	public String getBackNumber() {
+	return backNumber;
+	}
+	public void setBackNumber(String backNumber) {
+	this.backNumber = backNumber;
+	}
+
+//************************************* photo ******************************************	
+	
 	@Stereotype("PHOTO") 
 	private byte [] photo;	
     public byte[] getPhoto() {
@@ -80,6 +112,8 @@ public class Part extends Identifiable{
     public void setPhoto(byte[] photo) {
         this.photo=photo;
     }
+
+//************************************ morePhoto ***********************************    
     
 	@Stereotype("IMAGES_GALLERY") 
 	@Column(length=90)
@@ -91,48 +125,188 @@ public class Part extends Identifiable{
         this.morePhoto=morePhoto;
     }
 
+//********************************** specification *********************************    
+    
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList
 	private PartSpecification specification;
+	
+	public PartSpecification getSpecification() {
+	     return specification;
+	}
+	public void setSpecification(PartSpecification specification) {
+	     this.specification = specification;
+	}
+
+//********************************* category ***************************************	
 	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList
 	private PartCategory category;
 	
+	public PartCategory getCategory() {
+	     return category;
+	}
+	public void setCategory(PartCategory category) {
+	     this.category = category;
+	}
+
+//*********************************** materialType ***********************************	
+	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList(descriptionProperties="type")
 	private MaterialType materialType;
 	
+	public MaterialType getMaterialType() {
+	     return materialType;
+	}
+	public void setMaterialType(MaterialType materialType) {
+	     this.materialType = materialType;
+	}
+	
+//****************************  link to Uom *******************************************
+
+	@ManyToOne (fetch=FetchType.LAZY)
+	@DescriptionsList(descriptionProperties="uom")
+	private Uom uom;  
+
+	public Uom getUom() {
+	     return uom;
+	}
+	public void setUom(Uom uom) {
+	     this.uom = uom;
+	}
+
+//*********************************** blankWeight***********************************
+	
+	@Depends("cutSizeThickness, cutSizeWidth, cutSizePitch, cutSizeLength, partPerStrip, stripLength")
+	@Transient
+	@Column(length=10, precision = 8, scale = 4)
+	@DisplaySize(10) 
+	public double getBlankWeight(){
+		double result = 0;
+		if (materialType != null && materialType.getType().toLowerCase().equals("coil")){
+			result = (cutSizeThickness * cutSizeWidth * cutSizePitch) * 0.00000785;	
+		} else if (materialType != null && materialType.getType().toLowerCase().equals("pre-cut")){
+			result = (cutSizeThickness * cutSizeWidth * cutSizeLength) * 0.00000785;		
+		} else if (materialType != null && materialType.getType().toLowerCase().equals("strip")){
+			result = (cutSizeThickness * cutSizeWidth * stripLength) * 0.00000785 / partPerStrip;
+		}
+		return result;			
+	}
+		
+//************************************	cutSizeThickness ***************************
+
 	@Column(name = "cut_size_thicknesst" ,length=5)
-	private float cutSizeThickness;
+	private double cutSizeThickness;
+	
+	public double getCutSizeThickness() {
+	return cutSizeThickness;
+	}
+	public void setCutSizeThickness(double cutSizeThickness) {
+	this.cutSizeThickness = cutSizeThickness;
+	}
+
+//************************************	cutSizeWidth ******************************	
 	
 	@Column(name = "cut_size_width" ,length=5)
-	private float cutSizeWidth;
+	private double cutSizeWidth;
+	
+	public double getCutSizeWidth() {
+	return cutSizeWidth;
+	}
+	public void setCutSizeWidth(double cutSizeWidth) {
+	this.cutSizeWidth = cutSizeWidth;
+	}
+
+//************************************	cutSizePitch ******************************		
 	
 	@Column(name = "cut_size_pitch" ,length=5)
-	private float cutSizePitch;
+	private double cutSizePitch;
 	
-	@Column(name = "cutsizelength" ,length=5)
-	private float cutSizeLength;
+	public double getCutSizePitch() {
+	return cutSizePitch;
+	}
+	public void setCutSizePitch(double cutSizePitch) {
+	this.cutSizePitch = cutSizePitch;
+	}
+
+//************************************	cutSizeLength ******************************		
+	
+	@Column(name = "cut_size_length" ,length=5)
+	private double cutSizeLength;
+	
+	public double getCutSizeLength() {
+	return cutSizeLength;
+	}
+	public void setCutSizeLength(double cutSizeLength) {
+	this.cutSizeLength = cutSizeLength;
+	}
+
+//************************************	stripLength ******************************		
+
+	@Column(name = "strip_length" ,length=5)
+	private double stripLength;
+	
+	public double getStripLength() {
+	return stripLength;
+	}
+	public void setStripLength(double stripLength) {
+	this.stripLength = stripLength;
+	}	
+	
+//************************************	partPerStrip ******************************	
 	
 	@Column(name = "part_per_strip" ,length=5)
 	private int partPerStrip;
 	
-	@ManyToOne (fetch=FetchType.LAZY)
-	@DescriptionsList
-	private Uom unitOfMeasurement;
+	public int getPartPerStrip() {
+	return partPerStrip;
+	}
+	public void setPartPerStrip(int partPerStrip) {
+	this.partPerStrip = partPerStrip;
+	}
+
+
+
+//************************************	standardPacking ******************************		
 	
 	@Column(name = "standard_packing" ,length=5)
 	private int standardPacking;
 	
+	public int getStandardPacking() {
+	return standardPacking;
+	}
+	public void setStandardPacking(int standardPacking) {
+	this.standardPacking = standardPacking;
+	}
+
+//************************************	bufferStock *********************************		
+	
 	@Column(name = "buffer_stock" ,length=5)
 	private int bufferStock;
+	
+	public int getBufferStock() {
+	return bufferStock;
+	}
+	public void setBufferStock(int bufferStock) {
+	this.bufferStock = bufferStock;
+	}
+
+//************************************	purchaseType *********************************		
 	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList(descriptionProperties="type")
 	private PurchaseType purchaseType;
 	
-//**********************************************  link to Part Car model variance ***********************************
+	public PurchaseType getPurchaseType() {
+	     return purchaseType;
+	}
+	public void setPurchaseType(PurchaseType purcahseType) {
+	     this.purchaseType = purcahseType;
+	}
+	
+//****************************  link to Part Car model variance ***********************
    
 	@ListProperties("carModelVariance.carModel.carModel,carModelVariance.carModelVariance, quantityUsed")
 	@OneToMany( // To declare this as a persistent collection
@@ -147,42 +321,42 @@ public class Part extends Identifiable{
 	 this.carModelVariance = carModelVariance;
 	}
 	
-//**********************************************  link to Quotation Detail *******************************************
+//**********************************  link to Quotation Detail **********************************
 	  
-		@ListProperties("parent.supplier.name, parent.quotationNumber, price")
-		@OneToMany( // To declare this as a persistent collection
-				mappedBy="part", // The member of Detail that stores the relationship
-				cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
-		private Collection<QuotationDetail> quotationDetail = new ArrayList<QuotationDetail>();
+	@ListProperties("parent.supplier.name, parent.quotationNumber, price")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="part", // The member of Detail that stores the relationship
+			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
+	private Collection<QuotationDetail> quotationDetail = new ArrayList<QuotationDetail>();
+	
+	public Collection<QuotationDetail> getQuotationDetail() {
+	 return quotationDetail;
+	}
+	public void setQuotationDetail(Collection<QuotationDetail> quotationDetail) {
+	 this.quotationDetail = quotationDetail;
+	}		
 		
-		public Collection<QuotationDetail> getQuotationDetail() {
-		 return quotationDetail;
-		}
-		public void setQuotationDetail(Collection<QuotationDetail> quotationDetail) {
-		 this.quotationDetail = quotationDetail;
-		}		
-		
-//**********************************************  link to Supplier Order Detail *******************************************
+//*******************************  link to Supplier Order Detail ********************************
 	  
-		@ListProperties("parent.supplier.name, parent.orderNumber, parent.monthYear.monthYear,  orderQuantity, part.uom.uom")
-		@OneToMany( // To declare this as a persistent collection
-				mappedBy="part", // The member of Detail that stores the relationship
-				cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
-		private Collection<SupplierOrderDetail> supplierOrderDetail = new ArrayList<SupplierOrderDetail>();
+	@ListProperties("parent.supplier.name, parent.orderNumber, parent.monthYear.monthYear,  orderQuantity, part.uom.uom")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="part", // The member of Detail that stores the relationship
+			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
+	private Collection<SupplierOrderDetail> supplierOrderDetail = new ArrayList<SupplierOrderDetail>();
+	
+	public Collection<SupplierOrderDetail> getSupplierOrderDetail() {
+	 return supplierOrderDetail;
+	}
+	public void setSupplierOrderDetail(Collection<SupplierOrderDetail> supplierOrderDetail) {
+	 this.supplierOrderDetail = supplierOrderDetail;
+	}	
 		
-		public Collection<SupplierOrderDetail> getSupplierOrderDetail() {
-		 return supplierOrderDetail;
-		}
-		public void setSupplierOrderDetail(Collection<SupplierOrderDetail> supplierOrderDetail) {
-		 this.supplierOrderDetail = supplierOrderDetail;
-		}	
-		
-//**********************************************  link to Part Request Detail *******************************************
+//*****************************  link to Part Request Detail *************************************
   
 	@ListProperties("partRequest.fromLocation, partRequest.toLocation, quantityRequest")
 	@OneToMany( // To declare this as a persistent collection
 			mappedBy="part", // The member of Detail that stores the relationship
-			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
 	private Collection<PartRequestDetail> partRequestDetail = new ArrayList<PartRequestDetail>();
 	
 	public Collection<PartRequestDetail> getPartRequestDetail() {
@@ -192,12 +366,12 @@ public class Part extends Identifiable{
 	 this.partRequestDetail = partRequestDetail;
 	}
 
-//**********************************************  link to Part Child/Parent *******************************************
+//********************************  link to Part Child/Parent *****************************
   
 	@ListProperties("child.name, child.number, quantityUsed")
 	@OneToMany( // To declare this as a persistent collection
 			mappedBy="parent", // The member of Detail that stores the relationship
-			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
 	private Collection<PartChild> child = new ArrayList<PartChild>();
 	
 	public Collection<PartChild> getChild() {
@@ -207,162 +381,18 @@ public class Part extends Identifiable{
 	 this.child = child;
 	}		
 	
-//**********************************************  link to Part Child/Child *******************************************
+//****************************  link to Part Child/Child ***********************************
 
-@ListProperties("parent.name, parent.number, quantityUsed")
-@OneToMany( // To declare this as a persistent collection
-		mappedBy="child", // The member of Detail that stores the relationship
-		cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
-private Collection<PartChild> parent = new ArrayList<PartChild>();
-
-public Collection<PartChild> getParent() {
- return parent;
-}
-public void setParent(Collection<PartChild> parent) {
- this.parent = parent;
-}
-
-//**********************************************  link to Uom *******************************************
-	@ManyToOne (fetch=FetchType.LAZY)
-	@DescriptionsList(descriptionProperties="uom")
-	private Uom uom;  
-
-	public Uom getUom() {
-	     return uom;
-	}
-	public void setUom(Uom uom) {
-	     this.uom = uom;
-	}
+	@ListProperties("parent.name, parent.number, quantityUsed")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="child", // The member of Detail that stores the relationship
+			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
+	private Collection<PartChild> parent = new ArrayList<PartChild>();
 	
-//************************************************ link to part itself ********************************
-/*   
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name="part_child",
-        joinColumns={@JoinColumn(name="part_id", referencedColumnName="oid")},
-        inverseJoinColumns={@JoinColumn(name="child_id", referencedColumnName="oid")})
-    @ListProperties("name, number")
-    private Collection<Part> parent = new ArrayList<Part>();
- 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy="parent")
-    @ListProperties("name, number")
-    private Collection<Part> child = new ArrayList<Part>(); 
- 
-    public Collection<Part> getChild() {
-    	return parent;
-    }
-    public void setChild(Collection<Part> child) {
-    }
-    
-    public Collection<Part> getParent() {
-    	return child;
-    }
-    public void setParent(Collection<Part> parent) {
-    }
-*/
-//***********************************************************************************   
-    
-	public String getName() {
-	return name;
+	public Collection<PartChild> getParent() {
+	 return parent;
 	}
-	public void setName(String name) {
-	this.name = name;
-	}	
-	public String getNumber() {
-	return number;
+	public void setParent(Collection<PartChild> parent) {
+	 this.parent = parent;
 	}
-	public void setNumber(String number) {
-	this.number = number;
-	}	
-	
-	public String getBackNumber() {
-	return backNumber;
-	}
-	public void setBackNumber(String backNumber) {
-	this.backNumber = backNumber;
-	}
-	
-	public PartCategory getCategory() {
-	     return category;
-	}
-	public void setCategory(PartCategory category) {
-	     this.category = category;
-	}
-	
-	public PartSpecification getSpecification() {
-	     return specification;
-	}
-	public void setSpecification(PartSpecification specification) {
-	     this.specification = specification;
-	}
-	
-	public MaterialType getMaterialType() {
-	     return materialType;
-	}
-	public void setMaterialType(MaterialType materialType) {
-	     this.materialType = materialType;
-	}
-	
-	public float getCutSizeThickness() {
-	return cutSizeThickness;
-	}
-	public void setCutSizeThickness(float cutSizeThickness) {
-	this.cutSizeThickness = cutSizeThickness;
-	}
-	
-	public float getCutSizeWidth() {
-	return cutSizeWidth;
-	}
-	public void setCutSizeWidth(float cutSizeWidth) {
-	this.cutSizeWidth = cutSizeWidth;
-	}
-	
-	public float getCutSizePitch() {
-	return cutSizePitch;
-	}
-	public void setCutSizePitch(float cutSizePitch) {
-	this.cutSizePitch = cutSizePitch;
-	}
-	
-	public float getCutSizeLength() {
-	return cutSizeLength;
-	}
-	public void setCutSizeLength(float cutSizeLength) {
-	this.cutSizeLength = cutSizeLength;
-	}
-	
-	public int getPartPerStrip() {
-	return partPerStrip;
-	}
-	public void setPartPerStrip(int partPerStrip) {
-	this.partPerStrip = partPerStrip;
-	}
-	
-	public Uom getUnitOfMeasurement() {
-	     return unitOfMeasurement;
-	}
-	public void setUnitOfMeasurement(Uom unitOfMeasurement) {
-	     this.unitOfMeasurement = unitOfMeasurement;
-	}
-	
-	public int getStandardPacking() {
-	return standardPacking;
-	}
-	public void setStandardPacking(int standardPacking) {
-	this.standardPacking = standardPacking;
-	}
-	
-	public int getBufferStock() {
-	return bufferStock;
-	}
-	public void setBufferStock(int bufferStock) {
-	this.bufferStock = bufferStock;
-	}
-	
-	public PurchaseType getPurchaseType() {
-	     return purchaseType;
-	}
-	public void setPurchaseType(PurchaseType purcahseType) {
-	     this.purchaseType = purcahseType;
-	}
-	
 }
