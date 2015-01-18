@@ -25,13 +25,13 @@ public class QuotationDetail extends Identifiable {
 	}
 	
 //*************************************************** Price ***************************	
+	@Column(length=10, precision = 8, scale = 4)	
+	private double price;
 	
-	private float price;
-	
-	public float getPrice() {
+	public double getPrice() {
 	return price;
 	}
-	public void setPrice(float price) {
+	public void setPrice(double price) {
 	this.price = price;
 	}
 	

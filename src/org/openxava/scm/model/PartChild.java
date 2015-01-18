@@ -40,12 +40,13 @@ public class PartChild extends Identifiable{
 	
 //*************************************** Quantity Used ***********************************
 
-		private int quantityUsed;
+		@Column(name="quantiy_used")
+		private double quantityUsed;
 		
-		public int getQuantityUsed() {
+		public double getQuantityUsed() {
 		return quantityUsed;
 		}
-		public void setQuantityUsed(int quantityUsed) {
+		public void setQuantityUsed(double quantityUsed) {
 		this.quantityUsed = quantityUsed;
 		}
 }

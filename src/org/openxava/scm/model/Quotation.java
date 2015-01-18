@@ -10,7 +10,7 @@ import org.openxava.calculators.*;
 @Entity
 @Table(name="aes_quotations")
 
-//@Tab
+@Tab (properties="quotationNumber, supplier.name, quotationDate, validFrom, validUntil, currency.currency, paymentTerm.paymentTerm")
 //@View
 
 public class Quotation extends Identifiable{

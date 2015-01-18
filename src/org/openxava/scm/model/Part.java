@@ -7,7 +7,7 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 
 @Entity
-@Table(name="aes_part")
+@Table(name="aes_parts")
 
 @Views({
 	@View(members=
@@ -323,7 +323,7 @@ public class Part extends Identifiable{
 	
 //**********************************  link to Quotation Detail **********************************
 	  
-	@ListProperties("parent.supplier.name, parent.quotationNumber, price")
+	@ListProperties("parent.supplier.name, parent.quotationNumber, price, parent.currency.currency, parent.validFrom, parent.validUntil")
 	@OneToMany( // To declare this as a persistent collection
 			mappedBy="part", // The member of Detail that stores the relationship
 			cascade=CascadeType.REMOVE) // Indicates this is a collection of dependent entities
