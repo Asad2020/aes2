@@ -52,7 +52,7 @@ public class CarModelVariance extends Identifiable {
 	 this.volume = volume;
 	}
 	
-   //**********************************************  link to Part Car model variance *******************************************
+//**********************************************  link to Part Car model variance *******************************************
 	   
 		@ListProperties("part.name, part.number, quantityUsed")
 		@OneToMany( // To declare this as a persistent collection

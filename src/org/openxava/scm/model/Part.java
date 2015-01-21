@@ -17,6 +17,8 @@ import org.openxava.annotations.*;
 	" backNumber;" +
 	" category;" +
 	" uom;" + 
+	" standardPacking;" +
+	" bufferStock;" +
 	"]" +
 	"Photo [" +
 	" photo;" + 
@@ -48,10 +50,10 @@ import org.openxava.annotations.*;
 	" supplierOrderDetail;" +
 	"}" +
 	"}" + 
-	"Production Information {" +
+/*	"Production Information {" +
 	" standardPacking;" +
 	" bufferStock;" +
-	"}" +
+	"}" +*/
 	" BOM Information [" +
 	" parent;" +
 	" child;" +
@@ -395,4 +397,23 @@ public class Part extends Identifiable{
 	public void setParent(Collection<PartChild> parent) {
 	 this.parent = parent;
 	}
+	
+//****************************  link to partTransaction ***********************
+	@NoCreate
+	@ReadOnly 
+	@ListProperties("")
+	@OneToMany( // To declare this as a persistent collection
+			mappedBy="part", // The member of Detail that stores the relationship
+			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	private Collection<PartTransaction> partTransaction = new ArrayList<PartTransaction>();
+	
+	public Collection<PartTransaction> getPartTransaction() {
+	 return partTransaction;
+	}
+	public void setPartTransaction(Collection<PartTransaction> partTransaction) {
+	 this.partTransaction = partTransaction;
+	}	
+	
 }
+
+
