@@ -3,6 +3,7 @@ package org.openxava.scm.model;
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
+import org.openxava.scm.annotations.*;
 
 @Entity
 @Table(name="aes_uom")
@@ -22,7 +23,7 @@ public class Uom extends Identifiable{
 	public void setUom(String uom) {
 	this.uom = uom;
 	}
-
+	
 //**********************************************  link to PartUom *******************************************
 		
 }

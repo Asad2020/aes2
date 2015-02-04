@@ -6,6 +6,12 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+/**
+ * This class is for customer Car Models
+ * 
+ * @author mahmood
+ *
+ */
 
 @Entity
 @Table(name="aes_carmodels")
@@ -22,7 +28,8 @@ public class CarModel extends Identifiable{
 		this.carModel= carModel;
 	}
 
-//***************************************** Link to Organization (Customer) ********************************** 
+//******************************* Link to Organization (Customer) ************************** 
+	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList(descriptionProperties="name, shortName")
 	@Required
@@ -34,12 +41,12 @@ public class CarModel extends Identifiable{
 	     this.customer = customer;
 	}
 
-   //**********************************************  link to Car model variance *******************************************
+//*********************************link to Car model variance *******************************
    
 	@ListProperties("carModelVariance")
-	@OneToMany( // To declare this as a persistent collection
-			mappedBy="carModel", // The member of Detail that stores the relationship
-			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+	@OneToMany( 
+			mappedBy="carModel",
+			cascade=CascadeType.ALL)
 	private Collection<CarModelVariance> carModelVariance = new ArrayList<CarModelVariance>();
 	
 	public Collection<CarModelVariance> getCarModelVariance() {
@@ -49,5 +56,4 @@ public class CarModel extends Identifiable{
 	 this.carModelVariance = carModelVariance;
 	}
 	
-	//**************************************************************************************************************
 }

@@ -4,6 +4,13 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+/**
+ * This is a class for currency
+ * 
+ * @author mahmood
+ *
+ */
+
 @Entity
 @Table(name="aes_currencies")
 

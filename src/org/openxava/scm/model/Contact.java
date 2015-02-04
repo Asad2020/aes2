@@ -4,9 +4,18 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+/**
+ * This is a class for contacts
+ * The class has links to Organization
+ * 
+ * @author mahmood
+ *
+ */
+
 @Entity
 @Table(name="aes_contacts")
-@Tab(properties="organization.name, name, position, mobileNumber, phoneNumber, faxNumber, email, canCall, canEmail")
+@Tab(properties="organization.name, name, position, mobileNumber, phoneNumber, "
+		+ "faxNumber, email, canCall, canEmail")
 
 public class Contact extends Identifiable{
 	

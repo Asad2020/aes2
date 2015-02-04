@@ -85,12 +85,12 @@ public class Production extends Identifiable{
 	@OneToMany( // To declare this as a persistent collection
 			mappedBy="production", // The member of Detail that stores the relationship
 			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
-	private Collection<Downtimes> downtime = new ArrayList<Downtimes>();
+	private Collection<ProductionDowntime> downtime = new ArrayList<ProductionDowntime>();
 	
-	public Collection<Downtimes> getDowntime() {
+	public Collection<ProductionDowntime> getDowntime() {
 	 return downtime;
 	}
-	public void setDowntime(Collection<Downtimes> downtime) {
+	public void setDowntime(Collection<ProductionDowntime> downtime) {
 	 this.downtime = downtime;
 	}
 	

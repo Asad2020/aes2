@@ -6,6 +6,12 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+/**
+ * This class is for customer car model variances
+ * this class is used in BOM and Forecast
+ * @author mahmood
+ *
+ */
 @Entity
 @Table(name="aes_carmodel_variances")
 
@@ -18,6 +24,7 @@ import org.openxava.annotations.*;
 public class CarModelVariance extends Identifiable {
 
 	private String carModelVariance;
+	
 	public String getCarModelVariance(){
 		return carModelVariance;
 	}
@@ -26,10 +33,12 @@ public class CarModelVariance extends Identifiable {
 	}
 	
 //***************************************** Link to Car Model ********************************** 
+	
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList(descriptionProperties="carModel, customer.name")
 	@Required
 	private CarModel carModel;
+	
 	public CarModel getCarModel() {
 	     return carModel;
 	}
@@ -37,7 +46,7 @@ public class CarModelVariance extends Identifiable {
 	     this.carModel = carModel;
 	}
 	
-//**********************************************  link to Car model volumes  *******************************************
+//********************************  link to Car model volumes  *********************************
 	   
     @ListProperties("customerForecast.monthYear.monthYear, estimatedQuantity")
 	@OneToMany( // To declare this as a persistent collection
@@ -52,7 +61,7 @@ public class CarModelVariance extends Identifiable {
 	 this.volume = volume;
 	}
 	
-//**********************************************  link to Part Car model variance *******************************************
+//******************************  link to Part Car model variance ******************************
 	   
 		@ListProperties("part.name, part.number, quantityUsed")
 		@OneToMany( // To declare this as a persistent collection

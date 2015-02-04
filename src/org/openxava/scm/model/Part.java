@@ -1,3 +1,9 @@
+/**
+ * Class: Part contains all the properties for he part in the BOM
+ * In addition, it has the links to the other classes
+ * Wrote by: Mahmood Asadi
+ */
+
 package org.openxava.scm.model;
 
 import java.util.*;

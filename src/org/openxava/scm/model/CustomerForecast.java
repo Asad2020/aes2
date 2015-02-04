@@ -19,22 +19,23 @@ import org.openxava.annotations.*;
 public class CustomerForecast extends Identifiable{
 	
 //***********************************************  link to the customer  *******************
-		@ManyToOne (fetch=FetchType.LAZY, optional=false)
-		@DescriptionsList(descriptionProperties="name")
-		private Organization customer;			
-		
-		public Organization getCustomer() {
-		     return customer;
-		}
-		public void setCustomer(Organization customer) {
-		     this.customer = customer;
-		}
+	
+	@ManyToOne (fetch=FetchType.LAZY, optional=false)
+	@DescriptionsList(descriptionProperties="name")
+	private Organization customer;			
+	
+	public Organization getCustomer() {
+	     return customer;
+	}
+	public void setCustomer(Organization customer) {
+	     this.customer = customer;
+	}
 		
 //********************************************  link to month year  ************************
 		
 	@ManyToOne (fetch=FetchType.LAZY)
 	@DescriptionsList(descriptionProperties="monthYear")
-	//s@Required
+	//@Required
 	private MonthYear monthYear;
 	public MonthYear getMonthYear() {
 	     return monthYear;
@@ -56,12 +57,11 @@ public class CustomerForecast extends Identifiable{
 	this.workingDay = workingDay;
 	}
 
-   //**********************************************  link to Car model volume *****************************
+//**********************************************  link to Car model volume *****************************
    
-    @ListProperties("carModelVariance.carModel.carModel, carModelVariance.carModelVariance, estimatedQuantity")
-	@OneToMany( // To declare this as a persistent collection
-			mappedBy="customerForecast", // The member of Detail that stores the relationship
-			cascade=CascadeType.ALL) // Indicates this is a collection of dependent entities
+    @ListProperties("carModelVariance.carModel.carModel, carModelVariance.carModelVariance,"
+    		+ " estimatedQuantity")
+	@OneToMany( mappedBy="customerForecast", cascade=CascadeType.ALL)
 	private Collection<CarModelVolume> volume = new ArrayList<CarModelVolume>();
 	
 	public Collection<CarModelVolume> getVolume() {
@@ -71,6 +71,6 @@ public class CustomerForecast extends Identifiable{
 	 this.volume = volume;
 	}
 	
-	//*********************************************************************************************************
+//*********************************************************************************************************
 
 }
